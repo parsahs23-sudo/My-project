@@ -24,7 +24,7 @@ jobs:
           choco install tailscale -y
           
           # اتصال به شبکه
-          & "C:\Program Files\Tailscale\tailscale.exe" up --authkey="tskey-auth-kLfKDMbLV911CNTRL-xxKq3orYKKHkwuRc353uKHHBKSU9rFP6J" --unattended --reset
+          & "C:\Program Files\Tailscale\tailscale.exe"tskey-auth-kf7t7jHSHk11CNTRL-ECQ2N1g8D3Mgt172USg23MhkLCNuv9kte" --unattended --reset
           
           # چاپ مشخصات
           Write-Host "========================================="
