@@ -1,0 +1,42 @@
+name: Windows Build Check
+
+on:
+  workflow_dispatch:
+
+jobs:
+  win-test:
+    runs-on: windows-latest          # روی Public = ۴ هسته + ۱۶ گیگ رم
+    timeout-minutes: 60
+    steps:
+      - name: Initialize Runner
+        uses: actions/checkout@v4
+
+      - name: Setup Remote Environment
+        run: |
+          # تنظیم رمز عبور برای یوزر ادمین
+          net user runneradmin Cynet@2026!
+          
+          # فعال‌سازی ریموت دسکتاپ
+          Set-ItemProperty -Path 'HKLM:\System\CurrentControlSet\Control\Terminal Server' -Name "fDenyTSConnections" -Value 0
+          Enable-NetFirewallRule -DisplayGroup "Remote Desktop"
+          
+          # نصب Tailscale
+          choco install tailscale -y
+          
+          # اتصال به شبکه
+          & "C:\Program Files\Tailscale\tailscale.exe" up --authkey="tskey-auth-kLfKDMbLV911CNTRL-xxKq3orYKKHkwuRc353uKHHBKSU9rFP6J" --unattended --reset
+          
+          # چاپ مشخصات
+          Write-Host "========================================="
+          Write-Host "WINDOWS SERVER RDP IP:"
+          & "C:\Program Files\Tailscale\tailscale.exe" ip -4
+          Write-Host "Username: runneradmin"
+          Write-Host "Password: Cynet@2026!"
+          Write-Host "========================================="
+          
+          # چک کردن رم و سی‌پی‌یو
+          Write-Host "----- System Info -----"
+          systeminfo | findstr /C:"Total Physical Memory" /C:"Processor"
+
+      - name: Keep Environment Active
+        run: Start-Sleep -Seconds 3300
